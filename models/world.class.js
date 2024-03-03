@@ -55,9 +55,13 @@ class World {
         setInterval(() => {
             for(let i = 0; i < this.level.enemies.length; i++) {
                 let enemy = this.level.enemies[i];
+
                 if(bottle.isColliding(enemy)) {
-                    // Animnationen für Collisionen (Chicken)!!
-                    // Chicken Dead
+                    enemy.markAsDead();
+                    bottle.splash();
+                    setTimeout(() => {
+                        this.level.enemies.splice(i, 1);
+                    }, 1000);
                 }
             }
 
