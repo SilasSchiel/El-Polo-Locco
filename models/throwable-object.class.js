@@ -32,9 +32,21 @@ class ThrowableObject extends MoveableObject {
     throw() {
         this.speedY = 20;
         this.applyGravity();
-        setInterval(() => {
-            this.x += 10;
-        }, 25);   
+        const ground = 350;
+    
+        if(this.speedY > 0) {
+            this.intervalThrow = setInterval(() => {
+
+                if(!this.isSplash) {
+                    this.x += 10;
+                    if(this.y >= ground) {
+                        this.y = ground;
+                        this.splash();
+                    }
+                }
+            }, 1000 / 60);  
+        } 
+
         setInterval(() => {
             if(this.isSplash) {
                 this.playAnimation(this.IMAGES_BOTTLE_SPLASH);
@@ -44,8 +56,9 @@ class ThrowableObject extends MoveableObject {
         }, 1000 / 60);
     }
 
-    splash() {
+    splash() { 
         this.isSplash = true;
+        clearInterval(this.intervalThrow);
     }
 
 }

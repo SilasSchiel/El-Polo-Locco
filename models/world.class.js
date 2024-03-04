@@ -55,13 +55,13 @@ class World {
         setInterval(() => {
             for(let i = 0; i < this.level.enemies.length; i++) {
                 let enemy = this.level.enemies[i];
-
+                
                 if(bottle.isColliding(enemy)) {
                     enemy.markAsDead();
-                    bottle.splash();
+                    bottle.splash(); 
                     setTimeout(() => {
                         this.level.enemies.splice(i, 1);
-                    }, 1000);
+                    }, 500);
                 }
             }
 
@@ -69,6 +69,7 @@ class World {
                 if(bottle.isColliding(eb)) {
                     this.character.energyEndboss -= 2;
                     this.character.updateEndbossHealth();
+                    bottle.splash(); 
                     // Animationen für Collsionen (Endboss)!!
                     // Endboss is Hurt
                 }
