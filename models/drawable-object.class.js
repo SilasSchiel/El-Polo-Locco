@@ -35,7 +35,7 @@ class DrawableObject {
     }
 
     drawBorderOffset(ctx) {
-        if(this instanceof Character || this instanceof Coins || this instanceof Chicken) {
+        if(this instanceof Character || this instanceof Coins || this instanceof Chicken || this instanceof Endboss) {
             ctx.beginPath();
             ctx.lineWidth = '5';
             ctx.strokeStyle =  'red';

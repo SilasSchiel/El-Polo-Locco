@@ -38,7 +38,15 @@ class ThrowableObject extends MoveableObject {
             this.intervalThrow = setInterval(() => {
 
                 if(!this.isSplash) {
-                    this.x += 10;
+                    console.log(this.otherDirection);
+
+                    if(world.character.otherDirection == false) {
+                        this.x += 10;
+                    } 
+                    
+                    if(world.character.otherDirection == true) {
+                        this.x -= 10;
+                    }
                     if(this.y >= ground) {
                         this.y = ground;
                         this.splash();
