@@ -7,7 +7,8 @@ class MoveableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;
     energyEndboss = 100;
-    lastHit = 0;
+    lastHitCharacter = 0;
+    lastHitEndboss = 0;
     
     offset = {
         top: 0,
@@ -66,7 +67,7 @@ class MoveableObject extends DrawableObject {
         if(this.energy < 0) {
             this.energy = 0;
         } else {
-            this.lastHit = new Date().getTime();
+            this.lastHitCharacter = new Date().getTime();
         }
     }
 
@@ -76,14 +77,29 @@ class MoveableObject extends DrawableObject {
         if(this.energy < 0) {
             this.energy = 0;
         } else {
-            this.lastHit = new Date().getTime();
+            this.lastHitCharacter = new Date().getTime();
+        }
+    }
+
+    characterHitEndboss() {
+        this.energyEndboss -= 2;
+        this.world.statusBarEndbossHealth.setPercentage(this.energyEndboss);
+
+        if(this.energyEndboss < 0) {
+            this.energyEndboss = 0;
+        } else {
+            this.lastHitEndboss = new Date().getTime();
         }
     }
 
     isHurt() {
-        let timepassed = new Date().getTime() - this.lastHit;
-        timepassed = timepassed / 1000; // Differnece in s
+        let timepassed = (new Date().getTime() - this.lastHitCharacter) / 1000;
         return timepassed < 0.7;
+    }
+
+    isHurtEndboss() {
+        let timepassedEndboss = (new Date().getTime() - this.lastHitEndboss) / 1000;
+        return timepassedEndboss < 0.7;
     }
 
     isDead() {
@@ -96,9 +112,5 @@ class MoveableObject extends DrawableObject {
 
     collectBottle() {
          this.world.statusBarBottles.setPercentage(this.world.bottleCounter * 10);
-    }
-
-    updateEndbossHealth() {
-        this.world.statusBarEndbossHealth.setPercentage(this.energyEndboss);
     }
 }

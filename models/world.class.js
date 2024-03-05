@@ -61,17 +61,14 @@ class World {
                     bottle.splash(); 
                     setTimeout(() => {
                         this.level.enemies.splice(i, 1);
-                    }, 500);
+                     }, 500);
                 }
             }
 
             this.level.endboss.forEach((eb) => {
                 if(bottle.isColliding(eb)) {
-                    this.character.energyEndboss -= 2;
-                    this.character.updateEndbossHealth();
                     bottle.splash(); 
-                    // Animationen für Collsionen (Endboss)!!
-                    // Endboss is Hurt
+                    this.character.characterHitEndboss();
                 }
             });
 
