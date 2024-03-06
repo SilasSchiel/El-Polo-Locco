@@ -67,6 +67,9 @@ class MoveableObject extends DrawableObject {
             this.energy = 0;
         } else {
             world.level.endboss.lastHitCharacter = new Date().getTime();
+            if(this instanceof Endboss) {
+                this.attackEndboss();
+            }
         }
     }
 
