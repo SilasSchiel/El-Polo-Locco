@@ -23,7 +23,14 @@ class World {
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
+        this.assignedWorldToLevel();
         this.run();
+    }
+
+    assignedWorldToLevel() {
+        this.level.endboss.forEach(eb => {
+            eb.world = this;
+        });
     }
 
     setWorld() {
@@ -68,7 +75,7 @@ class World {
             this.level.endboss.forEach((eb) => {
                 if(bottle.isColliding(eb)) {
                     bottle.splash(); 
-                    this.character.characterHitEndboss();
+                    eb.characterHitEndboss(eb);
                 }
             });
 

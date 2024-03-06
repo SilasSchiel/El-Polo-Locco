@@ -2,6 +2,7 @@ class Endboss extends MoveableObject  {
     y = 50;
     width = 250;
     height = 400;
+    lastHitEndboss = 0;
     
     IMAGES_ENDBOSS = [
         './img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -20,8 +21,9 @@ class Endboss extends MoveableObject  {
         'img/4_enemie_boss_chicken/4_hurt/G23.png'
     ];
 
-    constructor() {
+    constructor(world = null) {
         super().loadImg('./img/4_enemie_boss_chicken/2_alert/G5.png');
+        this.world = world;
         this.loadImages(this.IMAGES_ENDBOSS_HURTING);
         this.loadImages(this.IMAGES_ENDBOSS);
 
@@ -29,6 +31,25 @@ class Endboss extends MoveableObject  {
 
         this.animate();
     }
+
+    characterHitEndboss(eb) {
+        this.energyEndboss -= 2;
+        this.world.statusBarEndbossHealth.setPercentage(this.energyEndboss);
+
+        if(this.energyEndboss < 0) {
+            this.energyEndboss = 0;
+        } else {
+            this.lastHitEndboss = new Date().getTime();
+            console.log(this.lastHitEndboss);
+        }
+    }
+
+    isHurtEndboss() {
+        let timepassedEndboss = (new Date().getTime() - this.lastHitEndboss) / 1000;
+        console.log(this.lastHitEndboss);
+        return timepassedEndboss < 0.7;
+    }
+
 
     animate() {
         setInterval(() => {

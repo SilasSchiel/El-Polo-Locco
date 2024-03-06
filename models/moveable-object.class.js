@@ -8,7 +8,6 @@ class MoveableObject extends DrawableObject {
     energy = 100;
     energyEndboss = 100;
     lastHitCharacter = 0;
-    lastHitEndboss = 0;
     
     offset = {
         top: 0,
@@ -61,6 +60,16 @@ class MoveableObject extends DrawableObject {
                 this.y - this.offset.top < obj.y + obj.height + obj.offset.bottom;
     }    
 
+    hitEndboss() {
+        this.energy -= 10;
+        this.world.statusBarHealth.setPercentage(this.energy);
+        if(this.energy < 0) {
+            this.energy = 0;
+        } else {
+            world.level.endboss.lastHitCharacter = new Date().getTime();
+        }
+    }
+
     hit() {
         this.energy -= 5;
         this.world.statusBarHealth.setPercentage(this.energy);
@@ -71,35 +80,9 @@ class MoveableObject extends DrawableObject {
         }
     }
 
-    hitEndboss() {
-        this.energy -= 10;
-        this.world.statusBarHealth.setPercentage(this.energy);
-        if(this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHitCharacter = new Date().getTime();
-        }
-    }
-
-    characterHitEndboss() {
-        this.energyEndboss -= 2;
-        this.world.statusBarEndbossHealth.setPercentage(this.energyEndboss);
-
-        if(this.energyEndboss < 0) {
-            this.energyEndboss = 0;
-        } else {
-            this.lastHitEndboss = new Date().getTime();
-        }
-    }
-
     isHurt() {
         let timepassed = (new Date().getTime() - this.lastHitCharacter) / 1000;
         return timepassed < 0.7;
-    }
-
-    isHurtEndboss() {
-        let timepassedEndboss = (new Date().getTime() - this.lastHitEndboss) / 1000;
-        return timepassedEndboss < 0.7;
     }
 
     isDead() {
