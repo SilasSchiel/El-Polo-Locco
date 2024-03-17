@@ -3,6 +3,7 @@ class World {
     level = level1;
     character = new Character();
 
+
     canvas;
     ctx;
     keyboard;
@@ -23,14 +24,37 @@ class World {
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
-        this.assignedWorldToLevel();
+        this.character.initializeCharacter();
+        this.assignedEndbossToLevel();
+        this.assignedSmallEnemiesToLevel();
+        this.assignedNormalEnemiesToLevel();
         this.run();
+        setStoppableInterval(this.checkCollisionsOfElements.bind(this), 1000 / 25);
+        setStoppableInterval(this.checkCollisionsOfThrowableElements.bind(this), 200);
     }
 
-    assignedWorldToLevel() {
+    assignedEndbossToLevel() {
         this.level.endboss.forEach(eb => {
             eb.world = this;
+
+            eb.initializeEndboss();
         });
+    }
+
+    assignedSmallEnemiesToLevel() {
+        this.level.smallEnemies.forEach(en => {
+            en.world = this;
+
+            en.initializeSmallChicken();
+        })
+    }
+
+    assignedNormalEnemiesToLevel() {
+        this.level.normalEnemies.forEach(en => {
+            en.world = this;
+
+            en.initializeNormalChicken();
+        })
     }
 
     setWorld() {
@@ -38,12 +62,18 @@ class World {
     } 
 
     run() {
-        setInterval(() => {
-            this.checkCollision();
-            this.checkCollisionCoins();
-            this.checkCollisionBottles()
-            this.checkThrowObjects();
-        }, 200);
+        this.checkCollisionsOfElements();
+        this.checkCollisionsOfThrowableElements();
+    }
+
+    checkCollisionsOfElements() {
+        this.checkCollision();
+        this.checkCollisionCoins();
+        this.checkCollisionBottles()
+    }
+
+    checkCollisionsOfThrowableElements() {
+        this.checkThrowObjects();
     }
 
     checkThrowObjects() {
@@ -54,21 +84,31 @@ class World {
                 this.bottleCounter--;
                 this.character.collectBottle(); 
                 this.checkCollisionBottlesOnEnemy(bottle);
-0            }
+           }
         }
     }
 
     checkCollisionBottlesOnEnemy(bottle) {
         setInterval(() => {
-            for(let i = 0; i < this.level.enemies.length; i++) {
-                let enemy = this.level.enemies[i];
+            for(let i = 0; i < this.level.smallEnemies.length; i++) {
+                let enemy = this.level.smallEnemies[i];
                 
-                if(bottle.isColliding(enemy)) {
-                    enemy.markAsDead();
-                    bottle.splash(); 
-                    setTimeout(() => {
-                        this.level.enemies.splice(i, 1);
-                     }, 500);
+                if(enemy.isAlive) {
+                    if(bottle.isColliding(enemy)) {
+                        enemy.markAsDead();
+                        bottle.splash(); 
+                    }
+                }
+            }
+
+            for(let i = 0; i < this.level.normalEnemies.length; i++) {
+                let enemy = this.level.normalEnemies[i];
+                
+                if(enemy.isAlive) {
+                    if(bottle.isColliding(enemy)) {
+                        enemy.markAsDead();
+                        bottle.splash(); 
+                    }
                 }
             }
 
@@ -83,16 +123,41 @@ class World {
     }
 
     checkCollision() {
-        for(let i = 0; i < this.level.enemies.length; i++) {
-            let enemy = this.level.enemies[i];
-            if(this.character.isColliding(enemy)) {
-                this.character.hit();
-            } 
+        for(let i = 0; i < this.level.smallEnemies.length; i++) {
+            let enemy = this.level.smallEnemies[i];
+
+            if(enemy.isAlive) {
+                if(this.character.isColliding(enemy)) {
+                    if(this.character.isAboveGround() && this.character.speedY < 0)  {
+                        enemy.markAsDead();
+                        this.character.rebounceJump();
+                    } else {  
+                        this.character.hit();
+                    }
+                } 
+            }
+        }
+
+        for(let i = 0; i < this.level.normalEnemies.length; i++) {
+            let enemy = this.level.normalEnemies[i];
+
+            if(enemy.isAlive) {
+                if(this.character.isColliding(enemy)) {
+                    if(this.character.isAboveGround() && this.character.speedY < 0)  {
+                        enemy.markAsDead();
+                        this.character.rebounceJump();
+                    } else {  
+                        this.character.hit();
+                    }
+                } 
+            }
         }
 
         this.level.endboss.forEach((eb) => {
             if(this.character.isColliding(eb)) {
                 this.character.hitEndboss();
+                eb.lastAttack = new Date().getTime();
+                eb.lastAttackEndboss(); 
             }
         });
     }
@@ -120,14 +185,6 @@ class World {
         }
     }
 
-    isCharacterDead() {
-        if(this.character.energy <= 0) {
-            setInterval(() => {
-                this.world.playAnimation(this.character.IMAGES_DEAD);
-            }, 1000 / 60);
-        }
-    }
-
 
     draw() {   
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); 
@@ -147,7 +204,8 @@ class World {
         this.addObjectsToMap(this.throwableObjects);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.smallEnemies);
+        this.addObjectsToMap(this.level.normalEnemies);
         this.addObjectsToMap(this.level.endboss);
 
         this.ctx.translate(-this.camera_x, 0);
@@ -173,8 +231,6 @@ class World {
             mo.x = mo.x * -1;
         }
         mo.draw(this.ctx);
-        mo.drawBorder(this.ctx);
-        mo.drawBorderOffset(this.ctx);
  
         if(mo.otherDirection) {
             mo.x = mo.x * -1;

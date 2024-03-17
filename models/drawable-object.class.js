@@ -11,7 +11,7 @@ class DrawableObject {
         this.img = new Image();
         this.img.src = path;
     }
-
+    
     loadImages(arr) {
         arr.forEach(path => {
             let img = new Image();
@@ -25,7 +25,7 @@ class DrawableObject {
     }
 
     drawBorder(ctx) {
-        if(this instanceof Character || this instanceof Chicken || this instanceof Coins || this instanceof ThrowableObject || this instanceof Endboss) {
+        if(this instanceof Character || this instanceof SmallChicken || this instanceof Coins || this instanceof ThrowableObject || this instanceof Endboss) {
             ctx.beginPath();
             ctx.lineWidth = '5';
             ctx.strokeStyle = 'blue';
@@ -35,11 +35,11 @@ class DrawableObject {
     }
 
     drawBorderOffset(ctx) {
-        if(this instanceof Character || this instanceof Coins || this instanceof Chicken || this instanceof Endboss) {
+        if(this instanceof Character || this instanceof Coins || this instanceof SmallChicken || this instanceof NormalChicken || this instanceof Endboss) {
             ctx.beginPath();
             ctx.lineWidth = '5';
             ctx.strokeStyle =  'red';
-            ctx.rect(this.x - this.offset.left, this.y - this.offset.bottom, this.width - this.offset.right, this.height - this.offset.top);
+            ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.width - this.offset.left - this.offset.right, this.height - this.offset.top - this.offset.bottom);
             ctx.stroke();
         }
     }

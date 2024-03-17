@@ -5,12 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Locco</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Sofadi+One&display=swap" rel="stylesheet">
 </head>
-<body onload="init()">
+<body>
     
     <h1>El Pollo Locco</h1>
 
-    <canvas id="canvas" width="720px" height="480px"></canvas >
+    <div id="game-container">
+        <canvas id="canvas" width="720px" height="480px"></canvas>
+
+        <div id="start-container">
+            <button onclick="startGame()">Start Game</button>
+            <div id="directions-container">
+                <img src="img/book-button.svg" onclick="openDirectionPopUp()"">
+            </div>
+        </div>
+
+        <div id="after-start-game-container">
+            <div id="mute-container">
+                <img src="img/mute-button.svg" alt="">
+            </div>
+            <div id="directions-container">
+                <img src="img/book-button.svg" onclick="openDirectionPopUp()">
+            </div>
+            <div id="button-container">
+                <div id="restart-container">
+                    <img src="img/restart-button.svg" onclick="restartGame()">
+                </div>
+                <div id="change-status-mute-play">
+                    <img src="img/pause-button.svg" onclick="stopGame(), changeMuteToPlay()">
+                </div>
+            </div>
+        </div>
+
+        <div id="if-you-lost-container">
+            <img src="img/restart-button.svg" onclick="restartGame()">
+        </div>
+
+        <div id="if-game-over-container">
+            <img src="img/restart-button.svg" onclick="restartGame()">
+        </div>
+
+        <div id="fullscreen-container">
+            <img src="img/fullscreen-button.svg" onclick="openFullscreen()">
+        </div>
+
+        <div id="popup-window">
+            <div id="detail-directions-container">
+                <div class="space-between">
+                    <h2>The El Pollo Loco Guide</h2>
+                    <p onclick="closeDirectionPopUp()">x</p>
+                </div>
+                <p>El Pollo Loco is a 2D platformer game. In this game, you control Pepe, a Mexican character. 
+                   Wild chickens run towards you, which you must dodge, or else Pepe will take damage. 
+                   You can find coins to collect or Tabasco bottles that you can throw at enemies. 
+                   Hitting an enemy with a bottle causes them damage and eliminates them. 
+                   A small tip: Save bottles for the boss, as you can only eliminate them using the bottles.</p>
+                <div>
+                    <h2>Game Controls</h2>
+                    <p><b>Arrow left:</b> Move Left</p>
+                    <p><b>Arrow right:</b> Move right</p>
+                    <p><b>Space:</b> Jump</p>
+                    <p><b>D:</b> Throw bottle</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="models/drawable-object.class.js"></script>
     <script src="models/moveable-object.class.js"></script>
@@ -19,7 +81,8 @@
     <script src="models/statusbar-coins.class.js"></script>
     <script src="models/statusbar-endboss-health.class.js"></script>
     <script src="models/character.class.js"></script>
-    <script src="models/chicken.class.js"></script>
+    <script src="models/small-chicken.class.js"></script>
+    <script src="models/normal-chicken.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/endboss.class.js"></script>
     <script src="models/coins.class.js"></script>

@@ -3,7 +3,14 @@ class Endboss extends MoveableObject  {
     width = 250;
     height = 400;
     lastHitEndboss = 0;
-    lastAttack = 0;
+    
+
+    offset = {
+        top: 40, 
+        right: 10,
+        bottom: 10,
+        left: 20,
+    };
     
     IMAGES_ENDBOSS = [
         './img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -39,6 +46,13 @@ class Endboss extends MoveableObject  {
         'img/4_enemie_boss_chicken/3_attack/G20.png'
     ]
 
+    IMAGES_ENDBOSS_WALKING = [
+        'img/4_enemie_boss_chicken/1_walk/G1.png',
+        'img/4_enemie_boss_chicken/1_walk/G2.png',
+        'img/4_enemie_boss_chicken/1_walk/G3.png',
+        'img/4_enemie_boss_chicken/1_walk/G4.png'
+    ]
+
     constructor(world = null) {
         super().loadImg('./img/4_enemie_boss_chicken/2_alert/G5.png');
         this.world = world;
@@ -46,10 +60,15 @@ class Endboss extends MoveableObject  {
         this.loadImages(this.IMAGES_ENDBOSS);
         this.loadImages(this.IMAGES_ENDBOSS_DEAD);
         this.loadImages(this.IMAGES_ENDBOSS_ATTACK);
+        this.loadImages(this.IMAGES_ENDBOSS_WALKING);
 
         this.x = 2000;
+    }
 
+    initializeEndboss() {
         this.animate();
+        setStoppableInterval(() => this.intervalEndbossMove(), 1000 / 60);
+        setStoppableInterval(() => this.intervalAnimationEndboss(), 200);
     }
 
     characterHitEndboss(eb) {
@@ -61,10 +80,6 @@ class Endboss extends MoveableObject  {
         } else {
             this.lastHitEndboss = new Date().getTime();
         }
-    }
-
-    attackEndboss() {
-        return this.lastAttack = new Date().getTime();
     }
 
     lastAttackEndboss() {
@@ -82,16 +97,25 @@ class Endboss extends MoveableObject  {
     }
 
     animate() {
-        setInterval(() => {
-            if(this.isHurtEndboss()) {
-                this.playAnimation(this.IMAGES_ENDBOSS_HURTING);
-            } else if(this.isEndbossDead()) {
-                this.playAnimation(this.IMAGES_ENDBOSS_DEAD);
-            } else if(this.lastAttackEndboss()) {
-                this.playAnimation(this.IMAGES_ENDBOSS_ATTACK);
-            } else {
-                this.playAnimation(this.IMAGES_ENDBOSS);
-            }
-        }, 200);
+        this.intervalEndbossMove();
+        this.intervalAnimationEndboss();
+    }
+
+    intervalEndbossMove() {
+        this.moveLeft();
+    }
+
+    intervalAnimationEndboss() {
+        if(this.isHurtEndboss()) {
+            this.playAnimation(this.IMAGES_ENDBOSS_HURTING);
+        } else if(this.isEndbossDead()) {
+            this.playAnimation(this.IMAGES_ENDBOSS_DEAD);
+            document.getElementById('if-game-over-container').style.display = 'flex';
+            document.getElementById('after-start-game-container').style.display = 'none';
+        } else if(this.lastAttackEndboss()) {
+            this.playAnimation(this.IMAGES_ENDBOSS_ATTACK);
+        } else {
+            this.playAnimation(this.IMAGES_ENDBOSS_WALKING);
+        }
     }
 }

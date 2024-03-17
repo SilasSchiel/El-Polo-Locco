@@ -8,6 +8,7 @@ class MoveableObject extends DrawableObject {
     energy = 100;
     energyEndboss = 100;
     lastHitCharacter = 0;
+    lastAttack = 0;
     
     offset = {
         top: 0,
@@ -16,11 +17,15 @@ class MoveableObject extends DrawableObject {
         right: 0
     }
 
+    isAlive = true;
+
     applyGravity() {
         setInterval(() => {
             if(this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
+            } else {
+                this.y = 150;
             }
         }, 1000 / 25);
     }
@@ -53,11 +58,15 @@ class MoveableObject extends DrawableObject {
         this.speedY = 30;
     }
 
+    rebounceJump() {
+        this.speedY = 20;
+    }
+
     isColliding(obj) {
-        return  this.x + this.width - this.offset.right > obj.x - obj.offset.left &&
-                this.y + this.height - this.offset.bottom > obj.y + obj.offset.top &&
-                this.x - this.offset.left < obj.x + obj.width - obj.offset.right &&
-                this.y - this.offset.top < obj.y + obj.height + obj.offset.bottom;
+        return  this.x + this.offset.left < obj.x + obj.width - obj.offset.right &&
+        this.y + this.offset.top < obj.y + obj.height - obj.offset.bottom &&
+        this.x + this.width - this.offset.right > obj.x + obj.offset.left &&
+        this.y + this.height - this.offset.bottom > obj.y + obj.offset.top;
     }    
 
     hitEndboss() {
@@ -67,9 +76,6 @@ class MoveableObject extends DrawableObject {
             this.energy = 0;
         } else {
             world.level.endboss.lastHitCharacter = new Date().getTime();
-            if(this instanceof Endboss) {
-                this.attackEndboss();
-            }
         }
     }
 
@@ -81,6 +87,10 @@ class MoveableObject extends DrawableObject {
         } else {
             this.lastHitCharacter = new Date().getTime();
         }
+    }
+
+    markAsDead() {
+        this.isAlive = false;
     }
 
     isHurt() {
