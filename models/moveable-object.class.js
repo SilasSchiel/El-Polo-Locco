@@ -2,13 +2,18 @@ class MoveableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     charakterRun = new Audio('./audio/run.mp3');
+    characterJump = new Audio('./audio/jump.mp3');
+    chickenAudio = new Audio('./audio/chicken.mp3');
+    gameOver = new Audio('./audio/game-over.mp3');
+    victory = new Audio('./audio/victory.mp3');
     speedX = 0;
     speedY = 0;
     acceleration = 2.5;
-    energy = 100;
+    energy = 300;
     energyEndboss = 100;
     lastHitCharacter = 0;
     lastAttack = 0;
+    contactWidthEndboss = false;
     
     offset = {
         top: 0,
@@ -47,7 +52,6 @@ class MoveableObject extends DrawableObject {
 
     moveRight() {
         this.x += this.speed;
-        this.otherDirection = false;
     }
 
     moveLeft() {
@@ -70,27 +74,42 @@ class MoveableObject extends DrawableObject {
     }    
 
     hitEndboss() {
-        this.energy -= 10;
+        this.energy -= 8;
         this.world.statusBarHealth.setPercentage(this.energy);
         if(this.energy < 0) {
             this.energy = 0;
         } else {
             world.level.endboss.lastHitCharacter = new Date().getTime();
+            this.checkDamageCharacterSound();
         }
     }
 
     hit() {
-        this.energy -= 5;
+        this.energy -= 3;
         this.world.statusBarHealth.setPercentage(this.energy);
         if(this.energy < 0) {
             this.energy = 0;
         } else {
             this.lastHitCharacter = new Date().getTime();
+            this.checkDamageCharacterSound();
+        }
+    }
+
+    checkDamageCharacterSound() {
+        if(damageCharacterSound) {
+            this.world.damageCharacter.play();
+        } else {
+            this.world.damageCharacter.pause();
         }
     }
 
     markAsDead() {
         this.isAlive = false;
+        if(damageChickenSound) {
+            this.world.damageChicken.play();
+        } else {
+            this.world.damageChicken.pause();
+        }
     }
 
     isHurt() {

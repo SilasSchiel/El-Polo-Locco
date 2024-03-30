@@ -77,6 +77,7 @@ class Endboss extends MoveableObject  {
 
         if(this.energyEndboss < 0) {
             this.energyEndboss = 0;
+            this.isAlive = false;
         } else {
             this.lastHitEndboss = new Date().getTime();
         }
@@ -102,7 +103,14 @@ class Endboss extends MoveableObject  {
     }
 
     intervalEndbossMove() {
-        this.moveLeft();
+        if(this.isAlive && !this.otherDirection && this.contactWidthEndboss) {
+            this.moveLeft();
+            this.speed = 1.2;
+        } 
+
+        if(this.otherDirection) {
+            this.moveRight();
+        }
     }
 
     intervalAnimationEndboss() {
@@ -110,6 +118,8 @@ class Endboss extends MoveableObject  {
             this.playAnimation(this.IMAGES_ENDBOSS_HURTING);
         } else if(this.isEndbossDead()) {
             this.playAnimation(this.IMAGES_ENDBOSS_DEAD);
+            this.victory.play();
+            stopGame();
             document.getElementById('if-game-over-container').style.display = 'flex';
             document.getElementById('after-start-game-container').style.display = 'none';
         } else if(this.lastAttackEndboss()) {

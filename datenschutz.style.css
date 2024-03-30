@@ -1,0 +1,22 @@
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 100px;
+    font-family: 'Raleway';
+}
+
+.go-back-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.go-back-container img {
+    width: 50px;
+}
+
+@media(max-width: 1000px) {
+    body {
+        margin: 20px;
+    }
+}

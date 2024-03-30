@@ -34,11 +34,19 @@ const level1 = new Level(
         new SmallChicken(),
         new SmallChicken(),
         new SmallChicken(),
+        new SmallChicken(),
+        new SmallChicken(),
+        new SmallChicken(),
     ],
     [
         new NormalChicken(),
         new NormalChicken(),
         new NormalChicken(),
+        new NormalChicken(),
+        new NormalChicken(),
+        new NormalChicken(),
+        new NormalChicken(),
+        new NormalChicken()
     ],
     [
         new Endboss()
@@ -56,6 +64,9 @@ const level1 = new Level(
         new Coins() 
     ],
     [
+        new Bottles(),
+        new Bottles(),
+        new Bottles(),
         new Bottles(),
         new Bottles(),
         new Bottles(),

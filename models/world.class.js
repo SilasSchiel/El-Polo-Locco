@@ -1,8 +1,14 @@
 class World {
 
     level = level1;
-    character = new Character();
-
+    character = new Character('move-left', 'move-right', 'jump');
+    collectCoin = new Audio('./audio/collect-coin.mp3');
+    collectBottle = new Audio('./audio/collect-bottle.mp3');
+    smashBottle = new Audio('./audio/glass-smash.mp3');
+    damageCharacter = new Audio('./audio/character-hurt.mp3');
+    damageChicken = new Audio('./audio/enemies-hurt.mp3');
+    damageEndboss = new Audio('./audio/endboss-hurt.mp3');
+    endbossMusic = new Audio('./audio/endboss-sound.mp3');
 
     canvas;
     ctx;
@@ -18,7 +24,7 @@ class World {
     bottleCounter = 0;
 
 
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, bottle) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -31,6 +37,12 @@ class World {
         this.run();
         setStoppableInterval(this.checkCollisionsOfElements.bind(this), 1000 / 25);
         setStoppableInterval(this.checkCollisionsOfThrowableElements.bind(this), 200);
+
+        document.getElementById(bottle).addEventListener('touchstart', () => {
+            if(mobileGameBreak) {
+                this.characterThrow();
+            }
+        });
     }
 
     assignedEndbossToLevel() {
@@ -69,7 +81,8 @@ class World {
     checkCollisionsOfElements() {
         this.checkCollision();
         this.checkCollisionCoins();
-        this.checkCollisionBottles()
+        this.checkCollisionBottles();
+        this.checkPositionCharacter();
     }
 
     checkCollisionsOfThrowableElements() {
@@ -88,6 +101,16 @@ class World {
         }
     }
 
+    characterThrow() {
+        if(this.bottleCounter > 0) {
+            let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 150);
+            this.throwableObjects.push(bottle);
+            this.bottleCounter--;
+            this.character.collectBottle(); 
+            this.checkCollisionBottlesOnEnemy(bottle);
+        }
+    }
+
     checkCollisionBottlesOnEnemy(bottle) {
         setInterval(() => {
             for(let i = 0; i < this.level.smallEnemies.length; i++) {
@@ -96,7 +119,8 @@ class World {
                 if(enemy.isAlive) {
                     if(bottle.isColliding(enemy)) {
                         enemy.markAsDead();
-                        bottle.splash(); 
+                        bottle.splash();
+                        this.checkSmashBottleSound();
                     }
                 }
             }
@@ -107,7 +131,8 @@ class World {
                 if(enemy.isAlive) {
                     if(bottle.isColliding(enemy)) {
                         enemy.markAsDead();
-                        bottle.splash(); 
+                        bottle.splash();
+                        this.checkSmashBottleSound();
                     }
                 }
             }
@@ -115,11 +140,29 @@ class World {
             this.level.endboss.forEach((eb) => {
                 if(bottle.isColliding(eb)) {
                     bottle.splash(); 
+                    this.checkSmashBottleSound();
+                    this.checkDamageEndbossSound();
                     eb.characterHitEndboss(eb);
                 }
             });
 
          }, 200);
+    }
+
+    checkSmashBottleSound() {
+        if(smashBottleSound) {
+            this.smashBottle.play();
+        } else {
+            this.smashBottle.pause();
+        }
+    }
+
+    checkDamageEndbossSound() {
+        if(damageEndbossSound) {
+            this.damageEndboss.play();
+        } else {
+            this.damageEndboss.pause();
+        }
     }
 
     checkCollision() {
@@ -158,7 +201,7 @@ class World {
                 this.character.hitEndboss();
                 eb.lastAttack = new Date().getTime();
                 eb.lastAttackEndboss(); 
-            }
+            } 
         });
     }
 
@@ -169,7 +212,16 @@ class World {
                 this.level.coins.splice(i, 1);
                 this.coinCounter++;
                 this.character.collectCoin();
+                this.checkCollectCoinSound();
             }
+        }
+    }
+
+    checkCollectCoinSound() {
+        if(collectCoinSound) {
+            this.collectCoin.play();
+        } else {
+            this.collectCoin.pause();
         }
     }
 
@@ -181,8 +233,37 @@ class World {
                 this.draw();
                 this.bottleCounter++;
                 this.character.collectBottle();
+                this.checkCollectBottleSound();
             }
         }
+    }
+
+    checkCollectBottleSound() {
+        if(collectBottleSound) {
+            this.collectBottle.play();
+        } else {
+            this.collectBottle.pause();
+        }
+    }
+
+    checkPositionCharacter() {
+        this.level.endboss.forEach((eb) => {
+            if(eb.x < this.character.x) {
+                eb.otherDirection = true;
+            } else {
+                eb.otherDirection = false;
+            }
+
+            if(this.character.x > 1500) {
+                eb.contactWidthEndboss = true;
+                if(endbossMusicSound) {
+                    this.endbossMusic.play();
+                } else {
+                    this.endbossMusic.pause();
+                }
+                
+            }
+        });
     }
 
 

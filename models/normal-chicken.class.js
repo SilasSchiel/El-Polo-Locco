@@ -27,7 +27,7 @@ class NormalChicken extends MoveableObject {
         const maxWidth = 1920 - 80 - 500; 
         this.x = (500 + Math.random() * maxWidth);
         this.speed = 0.15 + Math.random() * 0.25;
-
+        this.movingRight;
     }
 
     initializeNormalChicken() {
@@ -46,14 +46,25 @@ class NormalChicken extends MoveableObject {
         if(this.isAlive) {
             this.playAnimation(this.IMAGES_WALKING);
         } else {
-            clearInterval(this.moveLeftIntervall); 
-            this.playAnimation(this.IMAGES_DEAD);                
+            this.isAlive = true;         
         }
     }
 
     intervalForWalkNormalEnemies() {
-        if(this.isAlive) {
-            this.moveLeft();
-        } 
+        if (this.isAlive) {
+            if (this.movingRight && this.x > 300) { 
+                this.movingRight = false;
+                this.otherDirection = false;
+            } else if (!this.movingRight && this.x <= 0) { 
+                this.movingRight = true;
+                this.otherDirection = true;
+            }
+    
+            if (this.movingRight) {
+                this.moveRight();
+            } else {
+                this.moveLeft();
+            }
+        }
     }
 }

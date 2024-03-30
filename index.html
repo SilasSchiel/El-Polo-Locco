@@ -5,27 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Locco</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Sofadi+One&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="img/favicon/site.webmanifest">
 </head>
-<body>
+<body onload="init()">
     
-    <h1>El Pollo Locco</h1>
+    <h1 id="headline">El Pollo Locco</h1>
 
     <div id="game-container">
-        <canvas id="canvas" width="720px" height="480px"></canvas>
+        <canvas id="canvas" width="720" height="480"></canvas>
 
         <div id="start-container">
             <button onclick="startGame()">Start Game</button>
             <div id="directions-container">
-                <img src="img/book-button.svg" onclick="openDirectionPopUp()"">
+                <img src="img/book-button.svg" onclick="openDirectionPopUp()">
             </div>
         </div>
 
         <div id="after-start-game-container">
             <div id="mute-container">
-                <img src="img/mute-button.svg" alt="">
+                <img id="mute-sounds" src="img/mute-button.svg" onclick="unmuteSounds()">
+                <img id="unmute-sounds" src="img/unmute-button.svg" onclick="muteSounds()">
             </div>
             <div id="directions-container">
                 <img src="img/book-button.svg" onclick="openDirectionPopUp()">
@@ -49,29 +51,60 @@
         </div>
 
         <div id="fullscreen-container">
-            <img src="img/fullscreen-button.svg" onclick="openFullscreen()">
+            <img id="open-fullscreen" src="img/fullscreen-button.svg" onclick="openFullscreen()">
+            <img id="close-fullscreen" src="img/fullscreen-button.svg" onclick="closeFullscreen()">
         </div>
 
         <div id="popup-window">
             <div id="detail-directions-container">
                 <div class="space-between">
-                    <h2>The El Pollo Loco Guide</h2>
-                    <p onclick="closeDirectionPopUp()">x</p>
-                </div>
-                <p>El Pollo Loco is a 2D platformer game. In this game, you control Pepe, a Mexican character. 
-                   Wild chickens run towards you, which you must dodge, or else Pepe will take damage. 
-                   You can find coins to collect or Tabasco bottles that you can throw at enemies. 
-                   Hitting an enemy with a bottle causes them damage and eliminates them. 
-                   A small tip: Save bottles for the boss, as you can only eliminate them using the bottles.</p>
-                <div>
                     <h2>Game Controls</h2>
-                    <p><b>Arrow left:</b> Move Left</p>
-                    <p><b>Arrow right:</b> Move right</p>
-                    <p><b>Space:</b> Jump</p>
-                    <p><b>D:</b> Throw bottle</p>
+                    <img src="img/kreis.svg" onclick="closeDirectionPopUp()">
+                </div>
+                    <div class="game-control">
+                        <img src="img/links.svg" alt=""><p>Move Left</p>
+                    </div>
+                    <div class="game-control">
+                        <img src="img/rechts.svg" alt=""><p>Move right</p>
+                    </div>
+                    <div class="game-control">
+                        <img src="img/raum.svg" alt=""><p>Jump</p>
+                    </div>
+                    <div class="game-control">
+                        <img src="img/buchstabe-d.svg" alt=""><p>Throw bottle</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mobile-gamecontrol">
+                <div id="move-left-and-right">
+                    <img id="move-left" src="img/mobile-img/arrow-left.svg">
+                    <img id="move-right" src="img/mobile-img/arrow-right.svg" alt="">
+                </div>
+                <div id="jump-and-throw">
+                    <img id="jump" src="img/mobile-img/arrow-up.svg" alt="">
+                    <img id="throw" src="img/mobile-img/crosshair.svg" alt="">
+                </div>
+            </div>
+
+            <div id="mobile-menu-buttons">
+                <div id="mobile-directions-container">
+                    <img id="mobile-open-fullscreen" src="img/fullscreen-button.svg" onclick="openFullscreen()">
+                    <img id="mobile-close-fullscreen" src="img/fullscreen-button.svg" onclick="closeFullscreen()">
+                </div>
+                <div id="mobile-restart-container">
+                    <img src="img/restart-button.svg" onclick="restartGame()">
+                </div>
+                <div id="mobile-change-status-mute-play">
+                    <img src="img/pause-button.svg" onclick="stopGame(), changePlayToBreakMobile()">
                 </div>
             </div>
         </div>
+
+    <div id="rotate-device"></div>
+
+    <div id="footer">
+        <a href="datenschutz.html">Datenschutz</a>
     </div>
 
     <script src="models/drawable-object.class.js"></script>

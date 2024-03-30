@@ -23,6 +23,7 @@ class SmallChicken extends MoveableObject {
         super().loadImg('./img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
+        this.movingRight;
 
         const maxWidth = 1920 - 80 - 500; 
         this.x = (800 + Math.random() * maxWidth);
@@ -37,14 +38,27 @@ class SmallChicken extends MoveableObject {
     }   
 
     animate() {
+
         this.intervalForWalkSmallEnemies();
         this.intervalForAnimationSmallEnemies();
     }
 
     intervalForWalkSmallEnemies() {
         if (this.isAlive) {
-            this.moveLeft();
-        } 
+            if (this.movingRight && this.x >= 2000) { 
+                this.movingRight = false;
+                this.otherDirection = false;
+            } else if (!this.movingRight && this.x <= 0) { 
+                this.movingRight = true;
+                this.otherDirection = true;
+            }
+    
+            if (this.movingRight) {
+                this.moveRight();
+            } else {
+                this.moveLeft();
+            }
+        }
     }
 
     intervalForAnimationSmallEnemies() {
