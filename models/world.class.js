@@ -37,47 +37,63 @@ class World {
         this.run();
         setStoppableInterval(this.checkCollisionsOfElements.bind(this), 1000 / 25);
         setStoppableInterval(this.checkCollisionsOfThrowableElements.bind(this), 200);
-
-        document.getElementById(bottle).addEventListener('touchstart', () => {
-            if(mobileGameBreak) {
-                this.characterThrow();
-            }
-        });
+        this.mobileThrowObjects(bottle);
     }
 
+    /**
+     * 
+     * Allows access to the final boss.
+     */
     assignedEndbossToLevel() {
         this.level.endboss.forEach(eb => {
             eb.world = this;
-
             eb.initializeEndboss();
         });
     }
 
+    /**
+     * 
+     * Allows access to the small chicken.
+     */
     assignedSmallEnemiesToLevel() {
         this.level.smallEnemies.forEach(en => {
             en.world = this;
-
             en.initializeSmallChicken();
         })
     }
 
+    /**
+     * 
+     * Allows access to the normal chicken.
+     */
     assignedNormalEnemiesToLevel() {
         this.level.normalEnemies.forEach(en => {
             en.world = this;
-
             en.initializeNormalChicken();
         })
     }
 
+    /**
+     * 
+     * Allows acess to the charcter.
+     */
     setWorld() {
         this.character.world = this;
     } 
 
+    /**
+     * 
+     * Check things that important for Collision
+     */
     run() {
         this.checkCollisionsOfElements();
         this.checkCollisionsOfThrowableElements();
     }
 
+    /**
+     * 
+     * Check collisions width Elements.
+     */
     checkCollisionsOfElements() {
         this.checkCollision();
         this.checkCollisionCoins();
@@ -85,70 +101,162 @@ class World {
         this.checkPositionCharacter();
     }
 
+    /**
+     * 
+     * Check collisions width throwable elements-
+     */
     checkCollisionsOfThrowableElements() {
         this.checkThrowObjects();
     }
 
+    /**
+     * 
+     * check throw objects
+     */
     checkThrowObjects() {
-        if(this.keyboard.D) {
-            if(this.bottleCounter > 0) {
+        if(this.ifPushKeyboardD()) {
+            if(this.ifBottleCounterBiggerThanZero()) {
                 let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 150);
-                this.throwableObjects.push(bottle);
-                this.bottleCounter--;
+                this.addNewThrowableObjects(bottle);
+                this.reducedBottleCounter();
                 this.character.collectBottle(); 
                 this.checkCollisionBottlesOnEnemy(bottle);
            }
         }
     }
 
+    /**
+     * 
+     * @returns - if pressed key d 
+     */
+    ifPushKeyboardD() {
+        return this.keyboard.D
+    }
+
+    /**
+     * 
+     * @returns - if bottle counter bigger than zero
+     */
+    ifBottleCounterBiggerThanZero() {
+        return this.bottleCounter > 0
+    }
+
+    /**
+     * 
+     * @param {ThrowableObject} bottle - Create a new Bottle
+     */
+    addNewThrowableObjects(bottle) {
+        this.throwableObjects.push(bottle);
+    }
+
+    /**
+     * 
+     * Reduce the bottle Counter
+     */
+    reducedBottleCounter() {
+        this.bottleCounter--;
+    }
+
+    /**
+     * 
+     * 
+     */
     characterThrow() {
-        if(this.bottleCounter > 0) {
+        if(this.ifBottleCounterBiggerThanZero()) {
             let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 150);
             this.throwableObjects.push(bottle);
-            this.bottleCounter--;
+            this.reducedBottleCounter();
             this.character.collectBottle(); 
             this.checkCollisionBottlesOnEnemy(bottle);
         }
     }
 
+    /**
+     * 
+     * @param {ThrowableObject} bottle - Create a new bottle.
+     */
     checkCollisionBottlesOnEnemy(bottle) {
         setInterval(() => {
-            for(let i = 0; i < this.level.smallEnemies.length; i++) {
-                let enemy = this.level.smallEnemies[i];
-                
-                if(enemy.isAlive) {
-                    if(bottle.isColliding(enemy)) {
-                        enemy.markAsDead();
-                        bottle.splash();
-                        this.checkSmashBottleSound();
-                    }
-                }
-            }
-
-            for(let i = 0; i < this.level.normalEnemies.length; i++) {
-                let enemy = this.level.normalEnemies[i];
-                
-                if(enemy.isAlive) {
-                    if(bottle.isColliding(enemy)) {
-                        enemy.markAsDead();
-                        bottle.splash();
-                        this.checkSmashBottleSound();
-                    }
-                }
-            }
-
-            this.level.endboss.forEach((eb) => {
-                if(bottle.isColliding(eb)) {
-                    bottle.splash(); 
-                    this.checkSmashBottleSound();
-                    this.checkDamageEndbossSound();
-                    eb.characterHitEndboss(eb);
-                }
-            });
-
+            this.checkCollisionBottlesOnSmallEnemies(bottle);
+            this.checkCollisionBottlesOnNormalEnemies(bottle);
+            this.checkCollsionBottlesOnEndboss(bottle);
          }, 200);
     }
 
+    /**
+     * 
+     * @param {ThrowableObject} bottle - Create a new Bottle.
+     * Check a collision with a bottle and the small enemy
+     */
+    checkCollisionBottlesOnSmallEnemies(bottle) {
+        for(let i = 0; i < this.level.smallEnemies.length; i++) {
+            let enemy = this.level.smallEnemies[i];
+            this.ifBottleIsCollidingSmallEnemies(enemy, bottle);
+        }
+    }
+
+    /**
+     * 
+     * @param {Array} enemy - The little enemy that is tested with the collision of the bottle.
+     * @param {ThrowableObject} bottle - Create a new Bottle.
+     */
+    ifBottleIsCollidingSmallEnemies(enemy, bottle) {
+        if(enemy.isAlive) {
+            if(bottle.isColliding(enemy)) {
+                enemy.markAsDead();
+                bottle.splash();
+                this.checkSmashBottleSound();
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {ThrowableObject} bottle - Create a new bottle.
+     * Check a collision with a bottle and the normal enemy.
+     */
+    checkCollisionBottlesOnNormalEnemies(bottle) {
+        for(let i = 0; i < this.level.normalEnemies.length; i++) {
+            let enemy = this.level.normalEnemies[i];
+            this.ifBottleIsCollidingNormalEnemies(enemy, bottle);
+        }
+    }
+
+    /**
+     * 
+     * @param {Array} enemy - The normal enemy that is tested with the collision of the bottle.
+     * @param {ThrowableObject} bottle - Create a new bottle.
+     */
+    ifBottleIsCollidingNormalEnemies(enemy, bottle) {
+        if(enemy.isAlive) {
+            if(bottle.isColliding(enemy)) {
+                enemy.markAsDead();
+                bottle.splash();
+                this.checkSmashBottleSound();
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {string} bottle - Create a new Bottle
+     * Check a collision with a bottle and the endboss.
+     */
+    checkCollsionBottlesOnEndboss(bottle) {
+        this.level.endboss.forEach((eb) => {
+            if(bottle.isColliding(eb)) {
+                bottle.splash(); 
+                this.checkSmashBottleSound();
+                this.checkDamageEndbossSound();
+                eb.characterHitEndboss(eb);
+            }
+        });
+    }
+
+    /**
+     * 
+     * Check bottle sound.
+     */
     checkSmashBottleSound() {
         if(smashBottleSound) {
             this.smashBottle.play();
@@ -157,6 +265,10 @@ class World {
         }
     }
 
+    /**
+     * 
+     * Check damage sound for endboss.
+     */
     checkDamageEndbossSound() {
         if(damageEndbossSound) {
             this.damageEndboss.play();
@@ -165,37 +277,77 @@ class World {
         }
     }
 
+    /**
+     * 
+     * Check Collision character width Enemey
+     */
     checkCollision() {
+        this.checkCollisionWidthSmallEnemy();
+        this.checkCollisionWidthNormalChicken();
+        this.checkCollisionWidthEndboss();
+    }
+
+    /**
+     * 
+     * Check Collision character width small chicken.
+     */
+    checkCollisionWidthSmallEnemy() {
         for(let i = 0; i < this.level.smallEnemies.length; i++) {
             let enemy = this.level.smallEnemies[i];
-
-            if(enemy.isAlive) {
-                if(this.character.isColliding(enemy)) {
-                    if(this.character.isAboveGround() && this.character.speedY < 0)  {
-                        enemy.markAsDead();
-                        this.character.rebounceJump();
-                    } else {  
-                        this.character.hit();
-                    }
-                } 
-            }
+            this.ifCharacterIsCollidingWidthSmallEnergy(enemy);
         }
+    }
 
+    /**
+     * 
+     * @param {Array} enemy - The small enemy that is tested width collision of the character.
+     */
+    ifCharacterIsCollidingWidthSmallEnergy(enemy) {
+        if(enemy.isAlive) {
+            if(this.character.isColliding(enemy)) {
+                if(this.character.isAboveGround() && this.character.speedY < 0)  {
+                    enemy.markAsDead();
+                    this.character.rebounceJump();
+                } else {  
+                    this.character.hit();
+                }
+            } 
+        }
+    }
+
+    /**
+     * 
+     * Check collision character width normal chicken.
+     */
+    checkCollisionWidthNormalChicken() {
         for(let i = 0; i < this.level.normalEnemies.length; i++) {
             let enemy = this.level.normalEnemies[i];
-
-            if(enemy.isAlive) {
-                if(this.character.isColliding(enemy)) {
-                    if(this.character.isAboveGround() && this.character.speedY < 0)  {
-                        enemy.markAsDead();
-                        this.character.rebounceJump();
-                    } else {  
-                        this.character.hit();
-                    }
-                } 
-            }
+            this.ifCharacterIsCollidingWidthNormalEnergy(enemy);
         }
+    }
 
+    /**
+     * 
+     * @param {Array} enemy - The normal enemy that is tested width collision of the character.
+     */
+    ifCharacterIsCollidingWidthNormalEnergy(enemy) {
+        if(enemy.isAlive) {
+            if(this.character.isColliding(enemy)) {
+                if(this.character.isAboveGround() && this.character.speedY < 0)  {
+                    enemy.markAsDead();
+                    this.character.rebounceJump();
+                } else {  
+                    this.character.hit();
+                }
+            } 
+        }
+    }
+
+    /**
+     * 
+     * Check collision character width endboss.
+     */
+    checkCollisionWidthEndboss() {
         this.level.endboss.forEach((eb) => {
             if(this.character.isColliding(eb)) {
                 this.character.hitEndboss();
@@ -205,6 +357,10 @@ class World {
         });
     }
 
+    /**
+     * 
+     * Check collision width coins.
+     */
     checkCollisionCoins() {
         for(let i = 0; i < this.level.coins.length; i++) {
             let coin = this.level.coins[i];
@@ -217,6 +373,10 @@ class World {
         }
     }
 
+    /**
+     * 
+     * Check Sound for collect coins.
+     */
     checkCollectCoinSound() {
         if(collectCoinSound) {
             this.collectCoin.play();
@@ -225,6 +385,10 @@ class World {
         }
     }
 
+    /**
+     * 
+     * Check collision width bottles.
+     */
     checkCollisionBottles() {
         for(let i = 0; i < this.level.bottles.length; i++) {
             let bottles = this.level.bottles[i];
@@ -238,6 +402,10 @@ class World {
         }
     }
 
+    /**
+     * 
+     * Check Sound for collect bottle.
+     */
     checkCollectBottleSound() {
         if(collectBottleSound) {
             this.collectBottle.play();
@@ -246,27 +414,72 @@ class World {
         }
     }
 
+    /**
+     * 
+     * Check current position for character.
+     */
     checkPositionCharacter() {
         this.level.endboss.forEach((eb) => {
-            if(eb.x < this.character.x) {
-                eb.otherDirection = true;
-            } else {
-                eb.otherDirection = false;
-            }
+            this.changeDirectionEndboss(eb);
+            this.characterHasContactWidthEndboss(eb);
+        });
+    }
 
-            if(this.character.x > 1500) {
-                eb.contactWidthEndboss = true;
-                if(endbossMusicSound) {
-                    this.endbossMusic.play();
-                } else {
-                    this.endbossMusic.pause();
-                }
-                
+    /**
+     * 
+     * @param {Array} eb - Access the enboss.
+     * Change the direction of endboss if the character is behind the endboss.
+     */
+    changeDirectionEndboss(eb) {
+        if(eb.x < this.character.x) {
+            eb.otherDirection = true;
+        } else {
+            eb.otherDirection = false;
+        }
+    }
+
+    /**
+     * 
+     * @param {Array} eb - Acess the endbooss.
+     * If the character is in the near of endboss.
+     */
+    characterHasContactWidthEndboss(eb) {
+        if(this.character.x > 1500) {
+            eb.contactWidthEndboss = true;
+            this.checkSoundEnbossMusic();
+        }
+    }
+
+    /**
+     * 
+     * Check Endboss Music.
+     */
+    checkSoundEnbossMusic() {
+        if(endbossMusicSound) {
+            this.endbossMusic.play();
+        } else {
+            this.endbossMusic.pause();
+        }    
+    }
+
+    /**
+     * 
+     * @param {string} bottle - Create a new Bottle
+     * Character throw a bottle (Mobile Version)    
+    */
+    mobileThrowObjects(bottle) {
+        document.getElementById(bottle).addEventListener('touchstart', () => {
+            if(mobileGameBreak) {
+                this.characterThrow();
             }
         });
     }
 
 
+    /**
+     * 
+     * Draw the world.
+     */
     draw() {   
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); 
 
@@ -298,12 +511,20 @@ class World {
         });
     }
 
+    /**
+     * 
+     * @param {string} obj - The object (Array) that add to the map.
+     */
     addObjectsToMap(obj) {
         obj.forEach(o => {
             this.addToMap(o);
         });
     }
 
+    /**
+     * 
+     * @param {string} mo - The object that add to the map.
+     */
     addToMap(mo) {
         if(mo.otherDirection) {
             this.ctx.save();

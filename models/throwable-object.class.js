@@ -30,36 +30,82 @@ class ThrowableObject extends MoveableObject {
         this.throw();
     }
 
+    /**
+     * 
+     * Throw a bottle.
+     */
     throw() {
         this.speedY = 20;
         this.applyGravity();
         const ground = 350;
-        if(throwingBottleSound) {
-            this.throwingBottle.play();
-        } else {
-            this.throwingBottle.pause();
-        }
-        
-    
+        this.checkThrowingBottleSound();
+        this.intervalForThrowingBottle(ground);
+        this.intervalForAnimationBottle();
+    }
+
+    /**
+     * 
+     * @param {number} ground - Value that determines the ground.
+     * An Interval that check the throwing of a bottle.
+     */
+    intervalForThrowingBottle(ground) {
         if(this.speedY > 0) {
             this.intervalThrow = setInterval(() => {
-
-                if(!this.isSplash) {
-                    if(world.character.otherDirection == false) {
-                        this.x += 10;
-                    } 
-                    
-                    if(world.character.otherDirection == true) {
-                        this.x -= 10;
-                    }
-                    if(this.y >= ground) {
-                        this.y = ground;
-                        this.splash();
-                    }
-                }
+                this.checkIfTheBottleNotSplash(ground);
             }, 1000 / 60);  
         } 
+    }
 
+    /**
+     * 
+     * @param {number} ground - Value that determines the ground.
+     * Check if the bottle not allready splash.
+     */
+    checkIfTheBottleNotSplash(ground) {
+        if(!this.isSplash) {
+            this.checkIfTheCharacterOtherDirectionFalse();
+            this.checkIfTheCharacterOtherDirectionTrue();
+            this.checkIfTheBottleReachTheGround(ground);
+        }
+    }
+
+    /**
+     * 
+     * If the character looks to the right, then he should also throw the bottle to the right.
+     */
+    checkIfTheCharacterOtherDirectionFalse() {
+        if(world.character.otherDirection == false) {
+            this.x += 10;
+        } 
+    }
+
+    /**
+     * 
+     * If the character looks to the left, then he should also throw the bottle to the left.
+     */
+    checkIfTheCharacterOtherDirectionTrue() {
+        if(world.character.otherDirection == true) {
+            this.x -= 10;
+        }
+    }
+
+    /**
+     * 
+     * @param {number} ground - Value that determines the ground.
+     * When the bottom is reached, the bottle should shatter.
+     */
+    checkIfTheBottleReachTheGround(ground) {
+        if(this.y >= ground) {
+            this.y = ground;
+            this.splash();
+        }
+    }
+
+    /**
+     * 
+     * Here the animation for the throwing wrong person is determined.
+     */
+    intervalForAnimationBottle() {
         setInterval(() => {
             if(this.isSplash) {
                 this.playAnimation(this.IMAGES_BOTTLE_SPLASH);
@@ -69,6 +115,22 @@ class ThrowableObject extends MoveableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * 
+     * The sound of the throwing bottle.
+     */
+    checkThrowingBottleSound() {
+        if(throwingBottleSound) {
+            this.throwingBottle.play();
+        } else {
+            this.throwingBottle.pause();
+        }
+    }
+
+    /**
+     * 
+     * This is where the bottle is bound to shatter.
+     */
     splash() { 
         this.isSplash = true;
         clearInterval(this.intervalThrow);

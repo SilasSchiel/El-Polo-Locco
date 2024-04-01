@@ -30,37 +30,67 @@ class SmallChicken extends MoveableObject {
         this.speed = 1 + Math.random() * 1.5;
     }
 
+    /**
+     * 
+     * Initialize the small chicken.
+     */
     initializeSmallChicken() {
         this.animate();
-
         setStoppableInterval(() => this.intervalForAnimationSmallEnemies(), 200);
         setStoppableInterval(() => this.intervalForWalkSmallEnemies(), 1000 / 60);
     }   
 
+    /**
+     * 
+     * Animatie the normal chicken for walk.
+     */
     animate() {
 
         this.intervalForWalkSmallEnemies();
         this.intervalForAnimationSmallEnemies();
     }
 
+    /**
+     * 
+     * When the object is alive then check the position and directition.
+     */
     intervalForWalkSmallEnemies() {
         if (this.isAlive) {
-            if (this.movingRight && this.x >= 2000) { 
-                this.movingRight = false;
-                this.otherDirection = false;
-            } else if (!this.movingRight && this.x <= 0) { 
-                this.movingRight = true;
-                this.otherDirection = true;
-            }
-    
-            if (this.movingRight) {
-                this.moveRight();
-            } else {
-                this.moveLeft();
-            }
+            this.checkThePositionOfSmallEnemy();
+            this.checkDirection();
         }
     }
 
+    /**
+     * 
+     * Check if object is moving right or left.
+     */
+    checkThePositionOfSmallEnemy() {
+        if (this.movingRight && this.x >= 2000) { 
+            this.movingRight = false;
+            this.otherDirection = false;
+        } else if (!this.movingRight && this.x <= 0) { 
+            this.movingRight = true;
+            this.otherDirection = true;
+        }
+    }
+
+    /**
+     * 
+     * Makes the object move to the right or left.
+     */
+    checkDirection() {
+        if (this.movingRight) {
+            this.moveRight();
+        } else {
+            this.moveLeft();
+        }
+    }
+
+    /**
+     * 
+     * Play Animation for the walking or dead enemy.
+     */
     intervalForAnimationSmallEnemies() {
         if(this.isAlive) {
             this.playAnimation(this.IMAGES_WALKING);

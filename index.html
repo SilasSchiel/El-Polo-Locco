@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
     <link rel="manifest" href="img/favicon/site.webmanifest">
 </head>
-<body onload="init()">
+<body>
     
     <h1 id="headline">El Pollo Locco</h1>
 
@@ -37,7 +37,8 @@
                     <img src="img/restart-button.svg" onclick="restartGame()">
                 </div>
                 <div id="change-status-mute-play">
-                    <img src="img/pause-button.svg" onclick="stopGame(), changeMuteToPlay()">
+                    <img id="pause-btn" src="img/pause-button.svg" onclick="stopGame(), changeMuteToPlay()">
+                    <img id="play-btn" src="img/play-button.svg" onclick="playGame(), changePlayToMute()">
                 </div>
             </div>
         </div>
@@ -96,12 +97,18 @@
                     <img src="img/restart-button.svg" onclick="restartGame()">
                 </div>
                 <div id="mobile-change-status-mute-play">
-                    <img src="img/pause-button.svg" onclick="stopGame(), changePlayToBreakMobile()">
+                    <img id="mobile-break-btn" src="img/pause-button.svg" onclick="stopGame(), changePlayToBreakMobile()">
+                    <img id="mobile-play-btn" src="img/play-button.svg" onclick="playGame(), changeBreakToPlayMobile()">
                 </div>
             </div>
         </div>
 
-    <div id="rotate-device"></div>
+    <div id="rotate-device">
+        <div class="rotate-container">
+            <img src="./img/rotate-smartphone.svg">
+            <h1>Turn your Device to play.</h1>
+        </div>
+    </div>
 
     <div id="footer">
         <a href="datenschutz.html">Datenschutz</a>

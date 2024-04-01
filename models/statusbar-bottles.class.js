@@ -21,12 +21,21 @@ class StatusbarBottles extends DrawableObject {
         this.setPercentage(0);
     }
 
+    /**
+     * 
+     * @param {number} percantage - Current percantage.
+     *  Sets the current percentage value. 
+     */
     setPercentage(percantage) {
         this.percantage = percantage;
         let path = this.IMAGES_BOTTLES[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /**
+     * 
+     * @returns Shows the matching picture.
+     */
     resolveImageIndex() {
         if(this.percantage == 100) {
             return 5;

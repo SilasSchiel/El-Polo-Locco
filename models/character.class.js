@@ -82,12 +82,7 @@ class Character extends MoveableObject {
         this.isMovingRight = false;
         this.timeLastAction = new Date().getTime(); // Zeit des letzten Ereignisses (z. B. Tastendruck)
         this.sleepingAnimationTimeout = null; // Timeout-Referenz für die Schlafanimation
-        document.getElementById(moveLeft).addEventListener('touchstart', () => {
-            if(mobileGameBreak) {
-                this.isMovingLeft = true;
-                this.movingLeft();
-            }
-        });
+        this.mobileTouchMoveLeft(moveLeft);
 
         document.getElementById(moveRight).addEventListener('touchstart', () => {
             if(mobileGameBreak) {
@@ -99,6 +94,15 @@ class Character extends MoveableObject {
         document.getElementById(jump).addEventListener('touchstart', () => {
             if(mobileGameBreak) {
                 this.characterMoveJump();
+            }
+        });
+    }
+
+    mobileTouchMoveLeft(moveLeft) {
+        document.getElementById(moveLeft).addEventListener('touchstart', () => {
+            if(mobileGameBreak) {
+                this.isMovingLeft = true;
+                this.movingLeft();
             }
         });
     }

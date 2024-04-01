@@ -21,12 +21,21 @@ class StatusbarCoins extends DrawableObject {
         this.setPercentageCoin(0);
     }
 
+    /**
+     * 
+     * @param {number} percantage - Current percantage.
+     * Sets the current percentage value. 
+     */
     setPercentageCoin(percantage) {
         this.percantage = percantage;
         let path = this.IMAGES_COINS[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /**
+     * 
+     * @returns Shows the matching picture.
+     */
     resolveImageIndex() {
         if(this.percantage == 100) {
             return 5;

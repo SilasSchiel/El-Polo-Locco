@@ -25,6 +25,10 @@ class Coins extends MoveableObject {
         this.animate();
     }  
 
+    /**
+     * 
+     * Animate Coin
+     */
     animate() {
         setInterval(() => {
             this.playAnimation(this.IMAGES_COIN);

@@ -30,18 +30,29 @@ class NormalChicken extends MoveableObject {
         this.movingRight;
     }
 
+    /**
+     * 
+     * Initialize the normal chicken.
+     */
     initializeNormalChicken() {
         this.animate();
-
         setStoppableInterval(() => this.intervalForAnimationNormalEnemies(), 200);
         setStoppableInterval(() => this.intervalForWalkNormalEnemies(), 1000 / 60);
     }
 
+    /**
+     * 
+     * Animatie the normal chicken for walk.
+     */
     animate() {
         this.intervalForAnimationNormalEnemies();
         this.intervalForWalkNormalEnemies();
     }
 
+    /**
+     * 
+     * Animate when the enemy is walking.
+     */
     intervalForAnimationNormalEnemies() {
         if(this.isAlive) {
             this.playAnimation(this.IMAGES_WALKING);
@@ -50,21 +61,40 @@ class NormalChicken extends MoveableObject {
         }
     }
 
+    /**
+     * 
+     * When the object is alive then check the position and directition.
+     */
     intervalForWalkNormalEnemies() {
         if (this.isAlive) {
-            if (this.movingRight && this.x > 300) { 
-                this.movingRight = false;
-                this.otherDirection = false;
-            } else if (!this.movingRight && this.x <= 0) { 
-                this.movingRight = true;
-                this.otherDirection = true;
-            }
-    
-            if (this.movingRight) {
-                this.moveRight();
-            } else {
-                this.moveLeft();
-            }
+            this.checkThePositionOfNormalEnemy();
+            this.checkDirection();
+        }
+    }
+
+    /**
+     * 
+     * Check if object is moving right or left.
+     */
+    checkThePositionOfNormalEnemy() {
+        if (this.movingRight && this.x > 300) { 
+            this.movingRight = false;
+            this.otherDirection = false;
+        } else if (!this.movingRight && this.x <= 0) { 
+            this.movingRight = true;
+            this.otherDirection = true;
+        }
+    }
+
+    /**
+     * 
+     * Makes the object move to the right or left.
+     */
+    checkDirection() {
+        if (this.movingRight) {
+            this.moveRight();
+        } else {
+            this.moveLeft();
         }
     }
 }

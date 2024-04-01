@@ -154,6 +154,14 @@ canvas {
   cursor: pointer;
 }
 
+#play-btn {
+  display: none;
+}
+
+#mobile-play-btn {
+  display: none;
+}
+
 #fullscreen-container {
   position: absolute;
   top: 0;

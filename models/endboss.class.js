@@ -65,16 +65,40 @@ class Endboss extends MoveableObject  {
         this.x = 2000;
     }
 
+    /**
+     * 
+     * Initialize the endboss.
+     */
     initializeEndboss() {
         this.animate();
         setStoppableInterval(() => this.intervalEndbossMove(), 1000 / 60);
         setStoppableInterval(() => this.intervalAnimationEndboss(), 200);
     }
 
+    /**
+     * 
+     * @param {array} eb - Access to endboss.
+     * When character hit the endboss.
+     */
     characterHitEndboss(eb) {
-        this.energyEndboss -= 4;
-        this.world.statusBarEndbossHealth.setPercentage(this.energyEndboss);
+        this.enbossLosesEnergy();
+        this.checkIfEndbossIsAlife();
+        this.setTheEnergyToStatusbar();
+    }
 
+    /**
+     * 
+     * Endboss loss energy.
+     */
+    enbossLosesEnergy() {
+        this.energyEndboss -= 4;
+    }
+
+    /**
+     * 
+     * Check whether the final boss is still alive
+     */
+    checkIfEndbossIsAlife() {
         if(this.energyEndboss < 0) {
             this.energyEndboss = 0;
             this.isAlive = false;
@@ -83,36 +107,84 @@ class Endboss extends MoveableObject  {
         }
     }
 
+    /**
+     * 
+     * Adjusts the boss's status bar based on his Energy.
+     */
+    setTheEnergyToStatusbar() {
+        this.world.statusBarEndbossHealth.setPercentage(this.energyEndboss);
+    }
+
+
+    /**
+     * 
+     * @returns Stores the time span from the last attack.
+     */
     lastAttackEndboss() {
         let timepassedAttack = (new Date().getTime() - this.lastAttack) / 1000;
         return timepassedAttack < 0.7;
     }
 
+    /**
+     * 
+     * @returns Stores the time span from the last hurt.
+     */
     isHurtEndboss() {
         let timepassedEndboss = (new Date().getTime() - this.lastHitEndboss) / 1000;
         return timepassedEndboss < 0.7;
     }
 
+    /**
+     * 
+     * @returns Check if Endboss is dead.
+     */
     isEndbossDead() {
         return this.energyEndboss == 0;
     }
 
+    /**
+     * 
+     * Animate the endboss.
+     */
     animate() {
         this.intervalEndbossMove();
         this.intervalAnimationEndboss();
     }
 
+    /**
+     * 
+     * Check if the endboss move left or right.
+     */
     intervalEndbossMove() {
+        this.endbossMoveLeft();
+        this.endbossMoveRight();
+    }
+
+    /**
+     * 
+     * Checks if the endboss move left.
+     */
+    endbossMoveLeft() {
         if(this.isAlive && !this.otherDirection && this.contactWidthEndboss) {
             this.moveLeft();
             this.speed = 1.2;
         } 
+    }
 
+    /**
+     * 
+     * Checks if the endboss move right.
+     */
+    endbossMoveRight() {
         if(this.otherDirection) {
             this.moveRight();
         }
     }
 
+    /**
+     * 
+     * Displays the animations according to different situations.
+     */
     intervalAnimationEndboss() {
         if(this.isHurtEndboss()) {
             this.playAnimation(this.IMAGES_ENDBOSS_HURTING);
