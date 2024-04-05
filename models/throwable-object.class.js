@@ -2,6 +2,7 @@ class ThrowableObject extends MoveableObject {
     width = 80;
     height = 60;
     throwingBottle = new Audio('./audio/throwing.mp3');
+    throwDirection;
 
     IMAGES_BOTTLE = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -39,8 +40,17 @@ class ThrowableObject extends MoveableObject {
         this.applyGravity();
         const ground = 350;
         this.checkThrowingBottleSound();
+        this.setThrowDirection();
         this.intervalForThrowingBottle(ground);
         this.intervalForAnimationBottle();
+    }
+
+    /**
+     * 
+     * Saves the character's direction for throwing the bottle
+     */
+    setThrowDirection() {
+        this.throwDirection = world.character.otherDirection ? -1 : 1;
     }
 
     /**
@@ -63,30 +73,18 @@ class ThrowableObject extends MoveableObject {
      */
     checkIfTheBottleNotSplash(ground) {
         if(!this.isSplash) {
-            this.checkIfTheCharacterOtherDirectionFalse();
-            this.checkIfTheCharacterOtherDirectionTrue();
+            this.updateBottlePosition();
             this.checkIfTheBottleReachTheGround(ground);
         }
     }
 
     /**
      * 
-     * If the character looks to the right, then he should also throw the bottle to the right.
+     * Determines the direction of the bottle when thrown without the bottle following the character.
      */
-    checkIfTheCharacterOtherDirectionFalse() {
-        if(world.character.otherDirection == false) {
-            this.x += 10;
-        } 
-    }
-
-    /**
-     * 
-     * If the character looks to the left, then he should also throw the bottle to the left.
-     */
-    checkIfTheCharacterOtherDirectionTrue() {
-        if(world.character.otherDirection == true) {
-            this.x -= 10;
-        }
+    updateBottlePosition() {
+        // Bewegt die Flasche basierend auf der Wurfrichtung
+        this.x += 10 * this.throwDirection;
     }
 
     /**

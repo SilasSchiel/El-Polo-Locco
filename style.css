@@ -355,6 +355,19 @@ canvas {
   width: 40px;
 }
 
+#loading-screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: #fff;
+}
+
 #footer {
   margin-bottom: 20px;
   position: absolute;

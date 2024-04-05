@@ -4,6 +4,7 @@ class DrawableObject {
     height = 200;
     width = 100;
     img;
+    audio;
     imageCache = {};
     currentImage = 0;
 

@@ -6,7 +6,6 @@ let screenWidth = window.innerWidth || document.documentElement.clientWidth || d
 let fullscreenClickCounter = 0;
 let backgroundSound = new Audio('./audio/background-sound.mp3');
 let mobileGameBreak = true;
-
 let gameOverSound = true;
 let characterRunSounds = true;
 let characterJumpSound = true;
@@ -29,20 +28,34 @@ setInterval(() => {
 
 /**
  * 
+ * Before the game starts, a loading screen will appear for 5 seconds.
+ */
+function loadingScreen() {
+    document.getElementById('loading-screen').style.display = 'flex';
+    document.getElementById('start-btn').style.display = 'none';
+    hideStartMenu();
+    startGame();
+}
+
+/**
+ * 
  * Start the Game.
  */
 function startGame() {
-    createNewWorld();
-    backgroundSound.play();
-    hideStartMenu();
-    showAfterStartGameContainer();
-}
+    setTimeout(() => {
+        document.getElementById('after-start-game-container').style.display = 'flex';
+        document.getElementById('loading-screen').style.display = 'none';
+        backgroundSound.play();
+        createNewWorld();
+        trackMobileButtonEvents();
+    }, 5000);
+} 
 
 /**
  * 
  * Create a new World.
  */
-function createNewWorld() {
+async function createNewWorld() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard, 'throw');
 }
@@ -51,7 +64,7 @@ function createNewWorld() {
  * 
  * Shows the buttons used during the game (pause, control and reload).
  */
-function showAfterStartGameContainer() {
+async function showAfterStartGameContainer() {
     document.getElementById('after-start-game-container').style.display = 'flex';
 }
 
@@ -230,7 +243,7 @@ function displayStartContainer() {
  * 
  * Does not display the home screen.
  */
-function hideStartMenu() {
+async function hideStartMenu() {
     document.getElementById('start-container').style.display = 'none';
     if(screenWidth <= 1000) {
         document.getElementById('mobile-gamecontrol').style.display = 'flex';
@@ -263,7 +276,7 @@ function changeCanvasToFullscreen(){
  * 
  * Activates the JS API to activate full screen in the browser
  */
-function apiToChangeToFullscreen() {
+function apiToChangeToFullscreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
     } else if (element.msRequestFullscreen) { // für IE11 (bis Juni 2022)
@@ -419,6 +432,52 @@ document.addEventListener('keyup', (e) => {
 
 /**
  * 
+ * A function to track the mobile touch events.
+ */
+ function trackMobileButtonEvents() {
+    document.getElementById('move-left').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    });
+
+    document.getElementById('move-left').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    });
+
+    document.getElementById('move-right').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    });
+
+    document.getElementById('move-right').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    });
+
+    document.getElementById('jump').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = true;
+    });
+
+    document.getElementById('jump').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = false;
+    });
+
+    document.getElementById('throw').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.S = true;
+    });
+
+    document.getElementById('throw').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.S = false;
+    });
+}
+
+/**
+ * 
  * Checks whether the mobile device is in portrait or landscape format
  */
 function checkOrientation() {
@@ -461,6 +520,12 @@ function hideGameContainer() {
  */
 function showRotateDeviceContainer() {
     document.getElementById('rotate-device').style.display = 'flex';
+    document.getElementById('rotate-device').innerHTML = `
+        <div class="rotate-container">
+            <img src="./img/rotate-smartphone.svg">
+            <h1>Turn your Device to play.</h1>
+        </div>
+    `;
 }
 
 /**

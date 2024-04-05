@@ -1,7 +1,7 @@
 class World {
 
+    character = new Character();
     level = level1;
-    character = new Character('move-left', 'move-right', 'jump');
     collectCoin = new Audio('./audio/collect-coin.mp3');
     collectBottle = new Audio('./audio/collect-bottle.mp3');
     smashBottle = new Audio('./audio/glass-smash.mp3');
@@ -37,7 +37,6 @@ class World {
         this.run();
         setStoppableInterval(this.checkCollisionsOfElements.bind(this), 1000 / 25);
         setStoppableInterval(this.checkCollisionsOfThrowableElements.bind(this), 200);
-        this.mobileThrowObjects(bottle);
     }
 
     /**
@@ -518,7 +517,7 @@ class World {
     addObjectsToMap(obj) {
         obj.forEach(o => {
             this.addToMap(o);
-        });
+        });3
     }
 
     /**
