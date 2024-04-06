@@ -190,7 +190,8 @@ class Endboss extends MoveableObject  {
             this.playAnimation(this.IMAGES_ENDBOSS_HURTING);
         } else if(this.isEndbossDead()) {
             this.playAnimation(this.IMAGES_ENDBOSS_DEAD);
-            this.victory.play();
+            this.world.sounds.endbossMusic.pause();
+            this.world.sounds.victory.play();
             stopGame();
             document.getElementById('if-game-over-container').style.display = 'flex';
             document.getElementById('after-start-game-container').style.display = 'none';

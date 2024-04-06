@@ -18,6 +18,13 @@ class DrawableObject {
         this.img.src = path;
     }
     
+    loadAudio(path) {
+        this.audio = new Audio();
+        this.audio.src = path;
+        // Optional: Laden der Audiodatei starten
+        this.audio.load();
+    }
+
     /**
      * 
      * @param {Array} arr - Array with many Images path.

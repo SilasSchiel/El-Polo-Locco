@@ -2,13 +2,21 @@ class World {
 
     character = new Character();
     level = level1;
-    collectCoin = new Audio('./audio/collect-coin.mp3');
-    collectBottle = new Audio('./audio/collect-bottle.mp3');
-    smashBottle = new Audio('./audio/glass-smash.mp3');
-    damageCharacter = new Audio('./audio/character-hurt.mp3');
-    damageChicken = new Audio('./audio/enemies-hurt.mp3');
-    damageEndboss = new Audio('./audio/endboss-hurt.mp3');
-    endbossMusic = new Audio('./audio/endboss-sound.mp3');
+
+    sounds = {
+        collectCoin: new Audio('audio/collect-coin.mp3'),
+        collectBottle: new Audio('audio/collect-bottle.mp3'),
+        smashBottle: new Audio('audio/glass-smash.mp3'),
+        damageCharacter: new Audio('audio/character-hurt.mp3'),
+        damageChicken: new Audio('audio/enemies-hurt.mp3'),
+        damageEndboss: new Audio('audio/endboss-hurt.mp3'),
+        endbossMusic: new Audio('audio/endboss-sound.mp3'),
+        charakterRun: new Audio('audio/run.mp3'),
+        characterJump: new Audio('audio/jump.mp3'),
+        chickenAudio: new Audio('audio/chicken.mp3'),
+        gameOver: new Audio('audio/game-over.mp3'),
+        victory: new Audio('audio/victory.mp3')
+    };
 
     canvas;
     ctx;
@@ -28,6 +36,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.preloadAudio();
         this.draw();
         this.setWorld();
         this.character.initializeCharacter();
@@ -37,6 +46,12 @@ class World {
         this.run();
         setStoppableInterval(this.checkCollisionsOfElements.bind(this), 1000 / 25);
         setStoppableInterval(this.checkCollisionsOfThrowableElements.bind(this), 200);
+    }
+
+    preloadAudio() {
+        Object.values(this.sounds).forEach(audio => {
+            audio.load(); // Dies startet das Laden der Audiodatei, falls nicht bereits geschehen.
+        });
     }
 
     /**
@@ -258,9 +273,9 @@ class World {
      */
     checkSmashBottleSound() {
         if(smashBottleSound) {
-            this.smashBottle.play();
+            this.sounds.smashBottle.play();
         } else {
-            this.smashBottle.pause();
+            this.sounds.smashBottle.pause();
         }
     }
 
@@ -270,9 +285,9 @@ class World {
      */
     checkDamageEndbossSound() {
         if(damageEndbossSound) {
-            this.damageEndboss.play();
+            this.sounds.damageEndboss.play();
         } else {
-            this.damageEndboss.pause();
+            this.sounds.damageEndboss.pause();
         }
     }
 
@@ -378,9 +393,9 @@ class World {
      */
     checkCollectCoinSound() {
         if(collectCoinSound) {
-            this.collectCoin.play();
+            this.sounds.collectCoin.play();
         } else {
-            this.collectCoin.pause();
+            this.sounds.collectCoin.pause();
         }
     }
 
@@ -407,9 +422,9 @@ class World {
      */
     checkCollectBottleSound() {
         if(collectBottleSound) {
-            this.collectBottle.play();
+            this.sounds.collectBottle.play();
         } else {
-            this.collectBottle.pause();
+            this.sounds.collectBottle.pause();
         }
     }
 
@@ -455,7 +470,7 @@ class World {
      */
     checkSoundEnbossMusic() {
         if(endbossMusicSound) {
-            this.endbossMusic.play();
+            this.sounds.endbossMusic.play();
         } else {
             this.endbossMusic.pause();
         }    

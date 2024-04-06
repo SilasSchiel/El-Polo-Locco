@@ -83,6 +83,7 @@ class Character extends MoveableObject {
         this.loadImages(this.IMAGES_HURTING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_SLEEPING);
+        this.loadAudio('audio/collect-coin.mp3');
         this.sleepTimer = null;
         this.isMovingLeft = false;
         this.isMovingRight = false;
@@ -152,6 +153,8 @@ class Character extends MoveableObject {
     characterIsDead() {
         this.playAnimation(this.IMAGES_DEAD);
         this.gameOverScreen();
+        this.world.sounds.endbossMusic.pause();
+        this.world.sounds.gameOver.play();
         stopGame();
     }
 
@@ -214,7 +217,7 @@ class Character extends MoveableObject {
      * When different keys are pressed, movements happen
      */
     intervalForMovement() {
-        this.charakterRun.pause();
+        this.world.sounds.charakterRun.pause();
         this.characterMoveToRight();
         this.characterMoveToLeft();
         this.characterJumping();
@@ -262,21 +265,21 @@ class Character extends MoveableObject {
      */
     characterRunSound() {
         if(characterRunSounds) {
-            this.charakterRun.play();
+            this.world.sounds.charakterRun.play();
         } else {
-            this.charakterRun.pause();
+            this.world.sounds.charakterRun.pause();
         }
     }
 
     /**
      * 
-     * Sound when characzer is jumping.
+     * Sound when character is jumping.
      */
     characterJumpSounds() {
         if(characterJumpSound) {
-            this.characterJump.play();
+            this.world.sounds.characterJump.play();
         } else {
-            this.characterJump.pause();
+            this.world.sounds.characterJump.pause();
         }
     }
 }

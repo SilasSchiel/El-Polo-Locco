@@ -1,11 +1,6 @@
 class MoveableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
-    charakterRun = new Audio('./audio/run.mp3');
-    characterJump = new Audio('./audio/jump.mp3');
-    chickenAudio = new Audio('./audio/chicken.mp3');
-    gameOver = new Audio('./audio/game-over.mp3');
-    victory = new Audio('./audio/victory.mp3');
     speedX = 0;
     speedY = 0;
     acceleration = 2.5;
@@ -159,9 +154,9 @@ class MoveableObject extends DrawableObject {
      */
     checkDamageCharacterSound() {
         if(damageCharacterSound) {
-            this.world.damageCharacter.play();
+            this.world.sounds.damageCharacter.play();
         } else {
-            this.world.damageCharacter.pause();
+            this.world.sounds.damageCharacter.pause();
         }
     }
 
@@ -180,9 +175,9 @@ class MoveableObject extends DrawableObject {
      */
     checkDamageChickenSound() {
         if(damageChickenSound) {
-            this.world.damageChicken.play();
+            this.world.sounds.damageChicken.play();
         } else {
-            this.world.damageChicken.pause();
+            this.world.sounds.damageChicken.pause();
         }
     }
 
